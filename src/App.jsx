@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import clevertap from "clevertap-web-sdk";
 import Navbar from "../components/Navbar/Navbar";
 import Board from "../components/Board/Board";
 // import data from '../data'
@@ -7,6 +8,16 @@ import { DragDropContext } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 import Editable from "../components/Editable/Editable";
 import useLocalStorage from "use-local-storage";
+
+/*  
+then((data) => {
+      console.log('sent', data)
+    })
+    .catch((err) => {
+      console.error(err)
+    });
+*/
+
 import "../bootstrap.css";
 function App() {
   const [data, setData] = useState(
@@ -14,6 +25,50 @@ function App() {
       ? JSON.parse(localStorage.getItem("kanban-board"))
       : []
   );
+
+  const handleClick = () => {
+    clevertap.event.push("Button Clicked");
+  };
+
+  const image =
+    "https://images.unsplash.com/photo-1617854818583-09e7f077a156?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXJsfGVufDB8fDB8fHww";
+
+  const handleProfile = () => {
+    clevertap.profile.push({
+      Site: {
+        Name: "Tanishk Shrivastava", // String
+        Identity: 6134026032, // String or number
+        Email: "tanishk@attributics.com", // Email address of the user
+        Phone: "+916820042672", // Phone (with the country code)
+        Gender: "M", // Can be either M or F
+        DOB: new Date(), // Date of Birth. Javascript Date object
+        Photo: image, // URL to the Image
+        "MSG-email": true, // Disable email notifications
+        "MSG-push": true, // Enable push notifications
+        "MSG-sms": true, // Enable sms notifications
+        "MSG-whatsapp": true, // Enable whatsapp notifications
+      },
+    });
+
+    console.log("profile pushed");
+  };
+
+  const handlePush = () => {
+    clevertap.notifications.push({
+      titleText: "Task completed",
+      bodyText: "Would you like to take a break?",
+      okButtonText: "Sure",
+      rejectButtonText: "Not yet",
+      okButtonColor: "#20c997",
+      askAgainTimeInSeconds: 5,
+    });
+
+    console.log("notif sent");
+  };
+
+  const handleUpdate = () => {
+    return;
+  };
 
   const defaultDark = window.matchMedia(
     "(prefers-colors-scheme: dark)"
@@ -150,7 +205,7 @@ function App() {
               />
             ))}
             <Editable
-              class={"add__board"}
+              className={"add__board"}
               name={"Add Board"}
               btnName={"Add Board"}
               onSubmit={addBoard}
@@ -159,6 +214,9 @@ function App() {
           </div>
         </div>
       </div>
+      <button onClick={handleClick}>Test Event</button>
+      <button onClick={handleProfile}>Profile Idify</button>
+      <button onClick={handlePush}>Send Push</button>
     </DragDropContext>
   );
 }
